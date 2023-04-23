@@ -11,28 +11,28 @@ struct Cli {
 enum Commands {
     #[command(name = "get")]
     #[command(about = "Get value from specific key")]
-    GetCmd { key: String },
+    Get { key: String },
 
     #[command(name = "set")]
     #[command(about = "Set value for specific key")]
-    SetCmd { key: String, value: String },
+    Set { key: String, value: String },
 
     #[command(name = "rm")]
     #[command(about = "Remove value for specific key")]
-    RmCmd { key: String },
+    Remove { key: String },
 }
 
 fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::GetCmd { key } => {
+        Commands::Get { key: _ } => {
             panic!("unimplemented")
         }
-        Commands::RmCmd { key } => {
+        Commands::Remove { key: _ } => {
             panic!("unimplemented")
         }
-        Commands::SetCmd { key, value } => {
+        Commands::Set { key: _, value: _ } => {
             panic!("unimplemented")
         }
     };

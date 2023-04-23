@@ -1,20 +1,25 @@
 use std::collections::HashMap;
 
+/// This is an implementation of in-memory k-v store
 pub struct KvStore {
     store: HashMap<String, String>,
 }
 
+impl Default for KvStore {
+    fn default() -> KvStore {
+        KvStore::new()
+    }
+}
+
 impl KvStore {
     pub fn new() -> KvStore {
-        KvStore { store: HashMap::new() }
+        KvStore {
+            store: HashMap::new(),
+        }
     }
 
     pub fn get(&self, key: String) -> Option<String> {
-        if let Some(v) = self.store.get(&key) {
-            return Some(v.clone());
-        } else {
-            return None;
-        }
+        self.store.get(&key).cloned()
     }
 
     pub fn set(&mut self, key: String, val: String) {
