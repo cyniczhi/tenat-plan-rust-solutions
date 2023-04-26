@@ -1,23 +1,25 @@
 use snafu::{ResultExt, Snafu};
-use std::{
-    collections::HashMap,
-    path::{Path, PathBuf},
-};
+use std::{collections::HashMap, fs, path::Path};
+
+// pub struct Error(InnerError);
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 #[derive(Debug, Snafu)]
-enum Error {
-    #[snafu(display("Unable to open file from {}: {}", path.display(), source))]
-    OpenLogFile {
-        source: std::io::Error,
-        path: PathBuf,
-    },
+pub enum Error {
+    #[snafu(display("Unable to open file from : {}", source))]
+    OpenLogFile { source: std::io::Error },
 }
+
+type BTreeMap<K = String, V = String> = std::collections::BTreeMap<K, V>;
 
 /// This is an implementation of in-memory k-v store
 pub struct KvStore {
-    store: HashMap<String, String>,
+    sstable_: BTreeMap,
+    db_file_: std::fs::File,
+
+    index_: std::collections::HashMap<String, u64>,
+    index_file_: std::fs::File,
 }
 
 impl Default for KvStore {
@@ -29,27 +31,29 @@ impl Default for KvStore {
 impl KvStore {
     pub fn new() -> KvStore {
         KvStore {
-            store: HashMap::new(),
+            // curr_sstable_: HashMap::new(),
         }
     }
 
     pub fn open(path: &Path) -> Result<KvStore> {
-        Err("unimplemented".to_string())
+        fs::File::open(path).context(OpenLogFileSnafu {})?;
+
+        Ok(KvStore::new())
     }
 
     pub fn get(&self, key: String) -> Result<Option<String>> {
-        Ok(self.store.get(&key).cloned())
+        // Ok(self.curr_sstable_.get(&key).cloned())
     }
 
     pub fn set(&mut self, key: String, val: String) -> Result<()> {
-        self.store.insert(key, val);
+        // self.curr_sstable_.insert(key, val);
 
-        Err("unimplemented".to_string())
+        Ok(())
     }
 
     pub fn remove(&mut self, key: String) -> Result<()> {
-        self.store.remove(&key);
+        // self.curr_sstable_.remove(&key);
 
-        Err("noimpl".to_string())
+        Ok(())
     }
 }
